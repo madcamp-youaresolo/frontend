@@ -3,7 +3,7 @@ import React from 'react';
 const TestResultPage = () => {
   return (
     <div>
-      <p>test result page</p>
+      <p style={{textAlign: 'center'}}>test result page</p>
     </div>
   );
 }
