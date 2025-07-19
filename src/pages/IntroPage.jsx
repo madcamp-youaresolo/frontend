@@ -41,7 +41,7 @@ const GradientBackground = styled.div`
 
 const LogoImage = styled.img`
     width: clamp(240px, 34vw, 440px);
-    aspect-ratio: 2.1 / 1;
+    aspect-ratio: 2 / 1;
     margin-bottom: 4vh;
 `;
 
