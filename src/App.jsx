@@ -6,6 +6,9 @@ import TestResultPage from './pages/TestResultPage';
 import FemaleTestPage from './pages/FemaleTestPage';
 import MaleTestPage from './pages/MaleTestPage';
 
+// page for test
+import PageForTest from './pages/PageForTest';
+
 function App() {
   return (
     <Routes>
@@ -15,6 +18,9 @@ function App() {
       <Route path="/test-female" element={<FemaleTestPage />} />
       <Route path="/test-male" element={<MaleTestPage />} />
       <Route path="/test-result" element={<TestResultPage />} />
+
+      {/* page for test */}
+      <Route path="/page-for-test" element={<PageForTest />} />
     </Routes>
   );
 }

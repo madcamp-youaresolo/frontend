@@ -29,7 +29,7 @@ const Wrapper = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: rgba(255, 255, 255, 0.97);
+    background-color: rgba(255, 255, 255, 0.9);
     border-bottom: 1px solid #D9D9D9;
 `;
 
