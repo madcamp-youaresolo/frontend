@@ -11,10 +11,15 @@ const Header = () => {
         navigate('/');
     };
 
+    // for test
+    const handleRetry = () => {
+        navigate('/page-for-test');
+    };
+
     return (
         <Wrapper>
             <LogoImage src={Logo} onClick={handleLogo}/>
-            <RetryWrapper>
+            <RetryWrapper onClick={handleRetry}>
                 <RetryIcon src={RetryIconImage} />
                 <RetryText>다시하기</RetryText>
             </RetryWrapper>
