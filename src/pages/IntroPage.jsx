@@ -1,10 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Logo from '/logo.png';
 import GenderSelectModal from '../components/GenderSelectModal';
 
 const IntroPage = () => {
     const [genderSelect, setGenderSelect] = useState(false);
+
+    // 스크롤 차단
+    useEffect(() => {
+        document.body.style.overflow = 'hidden';
+        return () => {
+            document.body.style.overflow = 'auto';
+        };
+    }, []);
 
     return (
         <GradientBackground>
@@ -32,15 +40,16 @@ const GradientBackground = styled.div`
 `;
 
 const LogoImage = styled.img`
-    width: clamp(200px, 32vw, 420px);
+    width: clamp(240px, 34vw, 440px);
     aspect-ratio: 2.1 / 1;
     margin-bottom: 4vh;
 `;
 
 const StartButton = styled.button`
-    width: clamp(40px, 28vw, 280px);
-    aspect-ratio: 5 / 1;
-    font-size: clamp(12px, 2vw, 20px);
+    width: clamp(200px, 36vw, 300px);
+    aspect-ratio: 5 / 1.1;
+    font-size: clamp(14px, 2vw, 22px);
+    font-weight: 400;
     color: #FAFAFA;
     background-color: #121212;
     border-radius: 100px;
