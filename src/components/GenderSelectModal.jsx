@@ -59,8 +59,9 @@ const Wrapper = styled.div`
 const Text = styled.span`
     font-size: clamp(24px, 4vw, 32px);
     font-weight: bold;
+    color: #121212;
     margin-top: 4vh;
-    margin-bottom: 2vh;
+    margin-bottom: 2.5vh;
     cursor: default;
 `;
 
@@ -69,12 +70,13 @@ const ButtonWrapper = styled.div`
     flew-direction: row;
     justify-content: center;
     gap: 1.5vw;
+    margin-bottom: 0.5vh;
 `;
 
 const Button = styled.button`
-    width: clamp(8px, 18vw, 120px);
-    aspect-ratio: 2.5 / 1;
-    font-size: clamp(14px, 2vw, 18px);
+    width: clamp(10px, 20vw, 120px);
+    aspect-ratio: 2.6 / 1;
+    font-size: clamp(12px, 2vw, 18px);
     color: #FAFAFA;
     background-color: #707070;
     border-radius: 100px;
