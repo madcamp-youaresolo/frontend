@@ -130,7 +130,7 @@ const FemaleTestPage = () => {
                         return alert("모든 문항에 답하지 않았습니다.");
                     }
                     const result = calculateResult();
-                    navigate('/test-result', { state: { result } });
+                    navigate('/test-result', { state: { result, gender: 'female' } });
                 }}
             >
                 결과 보기
