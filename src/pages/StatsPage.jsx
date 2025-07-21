@@ -1,57 +1,44 @@
+// src/pages/StatsPage.jsx
 import React, { useEffect, useRef, useState } from 'react';
 import Header from '../components/Header';
 import * as d3 from 'd3';
 import styled from 'styled-components';
-//import { getStats } from '../api';
 
-// 더미 데이터로 바로 초기화
+// 더미 데이터
 const dummyStats = [
-// 여성 데이터
-{ gender: 'female', result_type: '영숙', count: 5 },
-{ gender: 'female', result_type: '정숙', count: 3 },
-{ gender: 'female', result_type: '순자', count: 4 },
-{ gender: 'female', result_type: '영자', count: 6 },
-{ gender: 'female', result_type: '옥순', count: 2 },
-{ gender: 'female', result_type: '현숙', count: 1 },
-// 남성 데이터
-{ gender: 'male', result_type: '영수', count: 7 },
-{ gender: 'male', result_type: '상철', count: 2 },
-{ gender: 'male', result_type: '광수', count: 4 },
-{ gender: 'male', result_type: '영식', count: 3 },
-{ gender: 'male', result_type: '영철', count: 5 },
-{ gender: 'male', result_type: '영호', count: 1 },
+  { gender: 'female', result_type: '영숙', count: 5 },
+  { gender: 'female', result_type: '정숙', count: 3 },
+  { gender: 'female', result_type: '순자', count: 4 },
+  { gender: 'female', result_type: '영자', count: 6 },
+  { gender: 'female', result_type: '옥순', count: 2 },
+  { gender: 'female', result_type: '현숙', count: 1 },
+  { gender: 'male',   result_type: '영수', count: 7 },
+  { gender: 'male',   result_type: '상철', count: 2 },
+  { gender: 'male',   result_type: '광수', count: 4 },
+  { gender: 'male',   result_type: '영식', count: 3 },
+  { gender: 'male',   result_type: '영철', count: 5 },
+  { gender: 'male',   result_type: '영호', count: 1 },
 ];
 
 const femaleCategories = ['영숙','정숙','순자','영자','옥순','현숙'];
 const maleCategories   = ['영수','상철','광수','영식','영철','영호'];
 
 export default function StatsPage() {
-
   const [stats, setStats] = useState(dummyStats);
+  const femaleRef = useRef(null);
+  const maleRef   = useRef(null);
 
-  const femaleRef = useRef();
-  const maleRef   = useRef();
-
-
-  // useEffect(() => {
-  //   getStats()
-  //     .then(({ typeCounts }) => setStats(typeCounts))
-  //     .catch(console.error);
-  // }, []);
-  // 더미데이터를 쓰니까 일단은 위 코드 주석처리
-
-  // D3로 차트 그리기
+  // 차트 렌더링
   useEffect(() => {
     if (!stats) return;
 
-    // 성별별 데이터 분리
     const femaleData = femaleCategories.map(name => ({
       name,
       count: +(stats.find(s => s.gender === 'female' && s.result_type === name)?.count || 0)
     }));
     const maleData = maleCategories.map(name => ({
       name,
-      count: +(stats.find(s => s.gender === 'male'   && s.result_type === name)?.count || 0)
+      count: +(stats.find(s => s.gender === 'male' && s.result_type === name)?.count || 0)
     }));
 
     drawBarChart(femaleRef.current, femaleData);
@@ -59,50 +46,42 @@ export default function StatsPage() {
   }, [stats]);
 
   return (
-    <>
+    <Wrapper>
       <HeaderWrapper>
         <Header />
       </HeaderWrapper>
-      <Container $paddingTop={HEADER_HEIGHT /* 아래에서 정의 */}>
-      {stats ? (
-        <>
-          <ChartSection>
-            <h2>여성 유형별 분포</h2>
-            <ChartWrapper ref={femaleRef} />
-          </ChartSection>
-          <ChartSection>
-            <h2>남성 유형별 분포</h2>
-            <ChartWrapper ref={maleRef} />
-          </ChartSection>
-        </>
-      ) : (
-        <p>로딩 중…</p>
-      )}
-    </Container>
-    </>
+      <Container $paddingTop={HEADER_HEIGHT}>
+        {stats ? (
+          <ChartGrid>
+            <ChartSection>
+              <h2>여성 유형별 분포</h2>
+              <ChartWrapper ref={femaleRef} />
+            </ChartSection>
+            <ChartSection>
+              <h2>남성 유형별 분포</h2>
+              <ChartWrapper ref={maleRef} />
+            </ChartSection>
+          </ChartGrid>
+        ) : (
+          <p>로딩 중…</p>
+        )}
+      </Container>
+    </Wrapper>
   );
 }
 
-// D3 차트 그리는 헬퍼
+// D3 막대 차트 그리기 함수
 function drawBarChart(container, data) {
-
+  // 색상 스케일 (핑크 톤 팔레트)
   const color = d3.scaleOrdinal()
     .domain(data.map(d => d.name))
-    .range([
-      '#F5A8C7',
-      '#E79BCF',
-      '#D98ED8',
-      '#CC82E0',
-      '#BE75E8',
-      '#B168F0'
-    ]);
-  
-  // 기본 설정
+    .range(['#F5A8C7','#E79BCF','#D98ED8','#CC82E0','#BE75E8','#B168F0']);
+
   const width  = 600;
   const height = 300;
   const margin = { top: 20, right: 20, bottom: 40, left: 40 };
 
-  // 기존 SVG 제거 (리렌더 방지)
+  // 이전 차트 제거
   d3.select(container).selectAll('svg').remove();
 
   const svg = d3.select(container)
@@ -119,48 +98,70 @@ function drawBarChart(container, data) {
     .domain([0, d3.max(data, d => d.count)]).nice()
     .range([height - margin.bottom, margin.top]);
 
-  const xAxis = g => g
+  svg.append('g')
     .attr('transform', `translate(0,${height - margin.bottom})`)
     .call(d3.axisBottom(x));
 
-  const yAxis = g => g
+  svg.append('g')
     .attr('transform', `translate(${margin.left},0)`)
     .call(d3.axisLeft(y).ticks(5));
-
-  svg.append('g').call(xAxis);
-  svg.append('g').call(yAxis);
 
   svg.append('g')
     .selectAll('rect')
     .data(data)
     .join('rect')
-      .attr('x', d => x(d.name))
-      .attr('y', d => y(d.count))
+      .attr('x',      d => x(d.name))
+      .attr('y',      d => y(d.count))
       .attr('height', d => y(0) - y(d.count))
-      .attr('width', x.bandwidth())
-      .attr('fill', d => color(d.name))
-      .attr('rx', 16)
-      .attr('ry', 16)
-      .attr('fill-opacity', 0.7);
+      .attr('width',  x.bandwidth())
+      .attr('fill',   d => color(d.name))
+      .attr('rx',     8)          // 둥근 모서리
+      .attr('ry',     8)
+      .attr('fill-opacity', 0.8); // 반투명
 }
 
-const HEADER_HEIGHT = 100; // 헤더 높이
+const Wrapper = styled.div`
+  width: 100%;
+  min-height: 100vh;
+  /* 기존 FemaleTestPage에서 쓰셨던 그라데이션을 그대로 복사 */
+  background: linear-gradient(to bottom, #FFFFFF, #E3C9DE);
+  display: flex;
+  flex-direction: column;
+`;
+
+// 상수 및 스타일컴포넌트
+const HEADER_HEIGHT = 120;
 
 const HeaderWrapper = styled.div`
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 100;
-  padding-bottom: 1rem;
+  background: white;
 `;
 
 const Container = styled.div`
   padding: 2rem;
-  padding-top: ${({ $paddingTop }) => `${$paddingTop}px`};
+  padding-top: ${({ $paddingTop }) => `${$paddingTop + 20}px`};
 `;
+
+/* ★★★ 여기부터가 반응형 2×1 그리드 레이아웃 ★★★ */
+const ChartGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-gap: 2rem;
+`;
+/* ================================================= */
+
 const ChartSection = styled.div`
-  margin-bottom: 5rem;
-  h2 { text-align: center; }
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  h2 {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
 `;
+
 const ChartWrapper = styled.div`
   display: flex;
   justify-content: center;
