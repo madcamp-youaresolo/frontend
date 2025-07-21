@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Header from '../components/Header';
@@ -33,35 +33,35 @@ const originalQuestions = [
 
 function shuffleArray(arr) {
     const a = [...arr];
+
     for (let i = a.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [a[i], a[j]] = [a[j], a[i]];
     }
+
     return a;
 }
 
 const FemaleTestPage = () => {
-
     const navigate = useNavigate();
 
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [answers, setAnswers] = useState({});
+
     const [shuffledQuestions, setShuffledQuestions] = useState([]);
+
     useEffect(() => {
         setShuffledQuestions(shuffleArray(originalQuestions));
     }, []);
 
-
-    const [currentIndex, setCurrentIndex] = useState(0);
-
-    const [answers, setAnswers] = useState({});
-
-    const allAnswers = Object.keys(answers).length === shuffledQuestions.length;
-
+    const allAnswered =
+        shuffledQuestions.length > 0 &&
+        Object.keys(answers).length === shuffledQuestions.length;
 
     const handleAnswer = (id, score) => {
         setAnswers(prev => {
             const next = { ...prev, [id]: score };
             
-            // findIndex로 “첫 미응답 인덱스”를 정확히 찾아줍니다.
             const firstUnansweredIndex = shuffledQuestions.findIndex(q => next[q.id] === undefined);
             setCurrentIndex(
                 firstUnansweredIndex === -1
@@ -78,54 +78,63 @@ const FemaleTestPage = () => {
             정숙: 0,
             순자: 0,
             옥순: 0,
-            영자: 0
+            영자: 0,
+            현숙: 0
         };
 
-    shuffledQuestions.forEach((q) => {
-        const score = answers[q.id] || 0;
-        scores[q.group] += score;
-    });
+        shuffledQuestions.forEach((q) => {
+            const score = answers[q.id] || 0;
+            scores[q.group] += score;
+        });
 
-    const maxGroup = Object.entries(scores).reduce((max, curr) => {
-        return curr[1] > max[1] ? curr : max;
-    });
+        const maxGroup = Object.entries(scores).reduce((max, curr) => {
+            return curr[1] > max[1] ? curr : max;
+        });
 
-    return maxGroup[0];
-};
+        return maxGroup[0];
+    };
+
+    const  headerRef = useRef(null);
+    const [headerHeight, setHeaderHeight] = useState(0);
+    
+    useEffect(() => {
+        if (headerRef.current) {
+          setHeaderHeight(headerRef.current.offsetHeight);
+        }
+    }, []);
 
     return (
         <Wrapper>
-            <HeaderWrapper>
+            <HeaderWrapper ref={headerRef}>
                 <Header />
             </HeaderWrapper>
-            <BodyWrapper>
+            <BodyWrapper $paddingTop={headerHeight}>
                 <QuestionList>
-                    {shuffledQuestions.map((question, index) => (
+                    {shuffledQuestions.map((q, index) => (
                         <QuestionItem
-                            key={question.id}
-                            question={question.text}
+                            key={q.id}
+                            question={q.text}
                             index={index}
-                            selected={answers[question.id]}
+                            selected={answers[q.id]}
                             isActive={index === currentIndex}
                             isPast={index < currentIndex}
                             isFuture={index > currentIndex}
-                            onSelect={(score) => handleAnswer(question.id, score)}
+                            onSelect={(score) => handleAnswer(q.id, score)}
                         />
                     ))}
                 </QuestionList>
             </BodyWrapper>
-                <ResultButton 
-                    onClick={() => {
-                        if (!allAnswers) {
-                            return alert("모든 문항에 답하지 않았습니다.");
+            <ResultButton 
+                onClick={() => {
+                    if (!allAnswered) {
+                        return alert("모든 문항에 답하지 않았습니다.");
                     }
-                        const result = calculateResult();
-                        // Result page로 넘어가기
-                        navigate('/test-result', { state: { result } });
-                    }}
-                >
-                    결과 보기
-                </ResultButton>
+                    const result = calculateResult();
+                    navigate('/test-result', { state: { result } });
+                }}
+            >
+                결과 보기
+            </ResultButton>
         </Wrapper>
     );
 }
@@ -149,17 +158,21 @@ const HeaderWrapper = styled.div`
 `;
 
 const BodyWrapper = styled.div`
+    flex: 1;
+    display: flex;
+    flex-direction: column;
     overflow-y: auto;
-    padding: 2vh;
-    margin-top: 100px; 
+    align-items: center;
+    padding-top: ${({ $paddingTop }) => `${$paddingTop + 20}px`};
+    padding-right: 2vw;
+    padding-left: 2vw;
 `;
 
 const QuestionList = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4vh;
-  padding-bottom: 7vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5vh;
 `;
 
 const ResultButton = styled.button`
@@ -172,12 +185,11 @@ const ResultButton = styled.button`
     border-radius: 100px;
     border: none;
     display : block;
-    margin: 3vh auto 30vh auto;
+    margin: 8vh auto 12vh auto;
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: background-color 0.4s ease-in-out;
-
+    transition: background-color 0.3s ease-in-out;
 
     &:hover {
         background-color: #F575C2;
