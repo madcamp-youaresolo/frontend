@@ -73,7 +73,6 @@ const QuestionItem = ({ question, index, isActive, isPast, isFuture, selected, o
 
 export default QuestionItem;
 
-
 const Wrapper = styled.div`
     width: 100%;
     display: flex;

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Logo from '/logo.png';
-import GenderSelectModal from '../components/GenderSelectModal';
+import IntroModal from '../components/IntroModal';
 
 const IntroPage = () => {
-    const [genderSelect, setGenderSelect] = useState(false);
+    const [introModal, setIntroModal] = useState(false);
 
     // 스크롤 차단
     useEffect(() => {
@@ -17,11 +17,11 @@ const IntroPage = () => {
     return (
         <GradientBackground>
             <LogoImage src={Logo} />
-            <StartButton onClick={() => setGenderSelect(true)}>
+            <StartButton onClick={() => setIntroModal(true)}>
                 테스트 시작하기
             </StartButton>
-            {genderSelect && (
-                <GenderSelectModal onClose={() => setGenderSelect(false)} />
+            {introModal && (
+                <IntroModal onClose={() => setIntroModal(false)} />
             )}
         </GradientBackground>
     );
