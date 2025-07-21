@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Logo from '/logo.png';
-import RetryIconImage from '../assets/images/retry-icon.png';
+import RetryIconImage from '../assets/images/retry-black.png';
 
 const Header = () => {
     const navigate = useNavigate();
@@ -61,6 +61,6 @@ const RetryIcon = styled.img`
 
 const RetryText = styled.span`
     font-size: clamp(14px, 2vw, 20px);
-    font-weight: 600;
-    color: #FF50B9;
+    font-weight: 500;
+    color: #121212;
 `;
