@@ -1,12 +1,22 @@
-import React, { useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import EmptyHeartGray from '../assets/images/heart/empty-heart-gray.png';
 import EmptyHeartPink from '../assets/images/heart/empty-heart-pink.png';
 import FilledHeartGray from '../assets/images/heart/filled-heart-gray.png';
 import FilledHeartPink from '../assets/images/heart/filled-heart-pink.png';
 
-const QuestionItem = () => {
+const QuestionItem = ({ question, index, isActive, isPast, isFuture, selected, onSelect }) => {
+    const containerRef = useRef(null);
     const [select, setSelect] = useState(null);
+
+    useEffect(() => {
+        if (isActive && containerRef.current) {
+            containerRef.current.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center',
+            });
+        }
+    }, [isActive]);
 
     const renderHeart = (index) => {
         let src;
@@ -29,14 +39,22 @@ const QuestionItem = () => {
                 key={index}
                 src={src}
                 size={size}
-                onClick={() => setSelect(index)}
+                onClick={() => {
+                    setSelect(index);
+                    onSelect(index);
+                }}
             />
         );
     };
 
     return (
-        <Wrapper>
-            <QuestionText>나는 계획을 세우고 스스로 추진하는 편이다.</QuestionText>
+        <Wrapper
+            ref={containerRef}
+            isActive={isActive}
+            isPast={isPast}
+            isFuture={isFuture}
+        >
+            <QuestionText>{question}</QuestionText>
             <HeartContainer>
                 <HeartIcon>
                     {[0, 1, 2, 3, 4].map((index) => renderHeart(index))}
@@ -55,12 +73,16 @@ const QuestionItem = () => {
 
 export default QuestionItem;
 
+
 const Wrapper = styled.div`
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    opacity: ${({ isActive, isPast }) => (isActive ? 1 : isPast ? 0.3 : 0.3)};
+    pointer-events: ${({ isFuture }) => (isFuture ? 'none' : 'auto')};
+    transition: opacity 0.3s ease;
 `;
 
 const QuestionText = styled.span`
