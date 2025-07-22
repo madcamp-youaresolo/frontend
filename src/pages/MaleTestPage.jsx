@@ -136,7 +136,7 @@ const MaleTestPage = () => {
           const result = calculateResult();
           try {
             await saveProfile({ nickname, gender: 'male', resultType: result });
-            navigate('/test-result', { state: {result, nickname, gender: 'male'}});
+            navigate(`/test-result?nickname=${encodeURIComponent(nickname)}&gender=male&result=${result}`);
           } catch (err) {
             console.error('프로필 저장 실패:', err);
             alert('결과 저장 중 오류가 발생했습니다. 다시 시도해주세요');

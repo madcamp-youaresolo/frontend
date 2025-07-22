@@ -136,11 +136,12 @@ const FemaleTestPage = () => {
                     const result = calculateResult();
                     try {
                         await saveProfile({ nickname, gender: "female", resultType: result });
-                        navigate('/test-result', { state: { result, nickname, gender: 'female' } });
+                        navigate(`/test-result?nickname=${encodeURIComponent(nickname)}&gender=female&result=${result}`);
                     } catch (err) {
                         console.error('프로필 저장 실패:', err);
                         alert('결과 저장 중 오류가 발생했습니다. 다시 시도하세요')
-                    }}}
+                    }
+                }}
             >
                 결과 보기
             </ResultButton>

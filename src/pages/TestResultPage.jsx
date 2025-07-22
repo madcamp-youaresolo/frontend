@@ -35,9 +35,11 @@ const TestResultPage = () => {
   }, []);
 
   const location = useLocation();
-  const result = location.state?.result;
-  const gender = location.state?.gender;
-  const nickname = location.state?.nickname;
+  const params = new URLSearchParams(location.search);
+
+  const nickname = params.get('nickname') || location.state?.nickname;
+  const gender = params.get('gender') || location.state?.gender;
+  const result = params.get('result') || location.state?.result;
 
   const femaleData = {
     영숙: {
@@ -159,8 +161,12 @@ const TestResultPage = () => {
     return <p style={{color: '#121212', textAlign: 'center'}}>잘못된 접근입니다.</p>;
 
   // 이미지 저장
+  const resultRef = useRef(null);
+  
   const handleSaveImage = () => {
-    html2canvas(document.body).then(canvas => {
+    if (!resultRef.current) return;
+
+    html2canvas(resultRef.current).then(canvas => {
       const link = document.createElement('a');
       link.download = 'test-result.png';
       link.href = canvas.toDataURL();
@@ -169,15 +175,30 @@ const TestResultPage = () => {
   };
 
   // 결과 공유
-  const handleShareResult = () => {
+  const handleShareResult = async () => {
+    const encodedNickname = encodeURIComponent(nickname);
+    const encodedGender = encodeURIComponent(gender);
+    const encodedResult = encodeURIComponent(result);
+
+    const shareUrl = `${window.location.origin}/test-result?nickname=${encodedNickname}&gender=${encodedGender}&result=${encodedResult}`;
+
     if (navigator.share) {
-      navigator.share({
-        title: '너는솔로 캐릭터 유형 테스트',
-        text: `${nickname}님의 캐릭터는 ${characterData.name}입니다!`,
-        url: window.location.href
-      });
+      try {
+        await navigator.share({
+          title: '너는솔로',
+          text: `${nickname}님의 캐릭터는 ${characterData.name}입니다!`,
+          url: shareUrl,
+        });
+      } catch (err) {
+        console.error('공유 취소 또는 실패:', err);
+      }
     } else {
-      alert('공유 기능이 지원되지 않는 브라우저입니다.');
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        alert('공유 링크가 복사되었습니다!');
+      } catch (err) {
+        alert('링크 복사가 불가능한 환경입니다.');
+      }
     }
   };
 
@@ -188,25 +209,27 @@ const TestResultPage = () => {
       </HeaderWrapper>
 
       <BodyWrapper $paddingTop={headerHeight}>
-        <BoldText size="clamp(16px, 5vw, 32px)">
-          {/* user nickname */}
-          <Pink>{nickname} </Pink>
-          님의 너는솔로 캐릭터 유형은?
-        </BoldText>
+        <ResultCard ref={resultRef}>
+          <BoldText size="clamp(16px, 5vw, 32px)">
+            {/* user nickname */}
+            <Pink>{nickname} </Pink>
+            님의 너는솔로 캐릭터 유형은?
+          </BoldText>
 
-        {/* character image */}
-        <CharacterImage src={characterData.image} />
-        
-        {/* character name */}
-        <CharacterText>{characterData.name}</CharacterText>
+          {/* character image */}
+          <CharacterImage src={characterData.image} />
+          
+          {/* character name */}
+          <CharacterText>{characterData.name}</CharacterText>
 
-        {/* character description */}
-        <BoldText size="clamp(13px, 4vw, 26px)">{characterData.subtitle}</BoldText>
-        <LightText size="clamp(10px, 3vw, 20px)">
-          {characterData.description.split('\n').map((line, i) => (
-            <span key={i}>{line}<br /></span>
-          ))}
-        </LightText>
+          {/* character description */}
+          <BoldText size="clamp(13px, 4vw, 26px)">{characterData.subtitle}</BoldText>
+          <LightText size="clamp(10px, 3vw, 20px)">
+            {characterData.description.split('\n').map((line, i) => (
+              <span key={i}>{line}<br /></span>
+            ))}
+          </LightText>
+        </ResultCard>
 
         {/* stats page */}
         <StatsButton onClick={() => navigate('/stats')}>
@@ -252,13 +275,20 @@ const HeaderWrapper = styled.div`
 `;
 
 const BodyWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: ${({ $paddingTop }) => `${$paddingTop}px`} 4vw 3vh 4vw;
+`;
+
+const ResultCard = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
   align-items: center;
   justify-content: center;
-  padding: ${({ $paddingTop }) => `${$paddingTop}px`} 4vw 3vh 4vw;
+  padding: 2vh 3vw;
+  margin-top: 8vh;
 `;
 
 const BoldText = styled.span`
@@ -306,7 +336,6 @@ const CharacterImage = styled.img`
 `;
 
 const StatsButton = styled.button`
-  margin-top: 6vh;
   width: clamp(100px, 28vw, 180px);
   aspect-ratio: 7 / 1;
   font-size: clamp(10px, 2vw, 16px);
@@ -319,6 +348,7 @@ const StatsButton = styled.button`
   justify-content: center;
   align-items: center;
   transition: background-color 0.4s ease-in-out;
+  margin: 2.5vh 0vw;
 
   &:hover {
     background-color: #202020;
@@ -334,7 +364,6 @@ const ExportWrapper = styled.div`
   gap: 1vw;
   justify-content: center;
   align-items: center;
-  margin: 3vh 0vw;
 `;
 
 const Button = styled.button`
