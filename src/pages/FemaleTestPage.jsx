@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import Header from '../components/Header';
 import QuestionItem from '../components/QuestionItem';
@@ -44,6 +44,9 @@ function shuffleArray(arr) {
 
 const FemaleTestPage = () => {
     const navigate = useNavigate();
+    
+    const location = useLocation();
+    const nickname = location.state?.nickname;
 
     const [currentIndex, setCurrentIndex] = useState(0);
     const [answers, setAnswers] = useState({});
@@ -130,7 +133,7 @@ const FemaleTestPage = () => {
                         return alert("모든 문항에 답하지 않았습니다.");
                     }
                     const result = calculateResult();
-                    navigate('/test-result', { state: { result, gender: 'female' } });
+                    navigate('/test-result', { state: { result, nickname, gender: 'female' } });
                 }}
             >
                 결과 보기

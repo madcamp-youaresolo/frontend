@@ -21,7 +21,12 @@ const IntroModal = ({ onClose }) => {
             alert('성별을 선택해주세요.');
             return;
         }
-        navigate(`/test-${gender}`);
+        navigate(`/test-${gender}`, {
+            state: {
+                nickname,
+                gender,
+            },
+        });
     };
     
     return (
@@ -122,6 +127,7 @@ const Row = styled.div`
 `;
 
 const Label = styled.label`
+    color: #121212;
     font-size: clamp(16px, 3vw, 22px);
     font-weight: 600;
     width: clamp(40px, 14vw, 80px);
@@ -143,6 +149,7 @@ const Input = styled.input`
     font-size: clamp(12px, 2vw, 18px);
     align-items: center;
     justify-content: center;
+    background-color: #FAFAFA;
 
     &:focus {
         outline: none;

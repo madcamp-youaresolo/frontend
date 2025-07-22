@@ -31,6 +31,7 @@ const TestResultPage = () => {
   const location = useLocation();
   const result = location.state?.result;
   const gender = location.state?.gender;
+  const nickname = location.state?.nickname;
 
   const femaleData = {
     영숙: {
@@ -122,7 +123,7 @@ const TestResultPage = () => {
       <BodyWrapper $paddingTop={headerHeight}>
         <BoldText size="clamp(16px, 5vw, 32px)">
           {/* user nickname */}
-          <Pink>원숭이 </Pink>
+          <Pink>{nickname} </Pink>
           님의 너는솔로 캐릭터 유형은?
         </BoldText>
 
