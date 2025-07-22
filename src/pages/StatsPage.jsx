@@ -3,6 +3,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import Header from '../components/Header';
 import * as d3 from 'd3';
 import styled from 'styled-components';
+import { getStats } from '../api';
+
 import YoungSook from '../assets/images/characters/youngsook.png';
 import JungSook from '../assets/images/characters/jungsook.png';
 import SoonJa from '../assets/images/characters/soonja.png';
@@ -36,28 +38,35 @@ const maleList = [
 ];
 
 // 더미 데이터
-const dummyStats = [
-  { gender: 'female', result_type: '영숙', count: 5 },
-  { gender: 'female', result_type: '정숙', count: 3 },
-  { gender: 'female', result_type: '순자', count: 4 },
-  { gender: 'female', result_type: '영자', count: 6 },
-  { gender: 'female', result_type: '옥순', count: 2 },
-  { gender: 'female', result_type: '현숙', count: 1 },
-  { gender: 'male',   result_type: '영수', count: 7 },
-  { gender: 'male',   result_type: '상철', count: 2 },
-  { gender: 'male',   result_type: '광수', count: 4 },
-  { gender: 'male',   result_type: '영식', count: 3 },
-  { gender: 'male',   result_type: '영철', count: 5 },
-  { gender: 'male',   result_type: '영호', count: 1 },
-];
+// const dummyStats = [
+//   { gender: 'female', result_type: '영숙', count: 5 },
+//   { gender: 'female', result_type: '정숙', count: 3 },
+//   { gender: 'female', result_type: '순자', count: 4 },
+//   { gender: 'female', result_type: '영자', count: 6 },
+//   { gender: 'female', result_type: '옥순', count: 2 },
+//   { gender: 'female', result_type: '현숙', count: 1 },
+//   { gender: 'male',   result_type: '영수', count: 7 },
+//   { gender: 'male',   result_type: '상철', count: 2 },
+//   { gender: 'male',   result_type: '광수', count: 4 },
+//   { gender: 'male',   result_type: '영식', count: 3 },
+//   { gender: 'male',   result_type: '영철', count: 5 },
+//   { gender: 'male',   result_type: '영호', count: 1 },
+// ];
 
 const femaleCategories = ['영숙','정숙','순자','영자','옥순','현숙'];
 const maleCategories   = ['영수','상철','광수','영식','영철','영호'];
 
 export default function StatsPage() {
-  const [stats, setStats] = useState(dummyStats);
+  const [stats, setStats] = useState(null);
   const femaleRef = useRef(null);
   const maleRef   = useRef(null);
+
+  // 실제 API 호출
+  useEffect(() => {
+    getStats()
+      .then(({ typeCounts }) => setStats(typeCounts))
+      .catch(console.error);
+  }, []);
 
   // 차트 렌더링
   useEffect(() => {
