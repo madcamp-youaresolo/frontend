@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import FemaleGray from '../assets/images/female-gray.png';
-import FemaleWhite from '../assets/images/female-white.png';
-import MaleGray from '../assets/images/male-gray.png';
-import MaleWhite from '../assets/images/male-white.png';
+import FemaleGray from '../assets/images/gender/female-gray.png';
+import FemaleWhite from '../assets/images/gender/female-white.png';
+import MaleGray from '../assets/images/gender/male-gray.png';
+import MaleWhite from '../assets/images/gender/male-white.png';
 import Panel from '../assets/images/panel.png';
 
 const IntroModal = ({ onClose }) => {

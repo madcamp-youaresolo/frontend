@@ -44,7 +44,7 @@ function shuffleArray(arr) {
 
 const FemaleTestPage = () => {
     const navigate = useNavigate();
-    
+
     const location = useLocation();
     const nickname = location.state?.nickname;
 
@@ -166,7 +166,7 @@ const BodyWrapper = styled.div`
     flex-direction: column;
     overflow-y: auto;
     align-items: center;
-    padding-top: ${({ $paddingTop }) => `${$paddingTop + 20}px`};
+    padding-top: ${({ $paddingTop }) => `${$paddingTop + 36}px`};
     padding-right: 2vw;
     padding-left: 2vw;
 `;
@@ -175,7 +175,7 @@ const QuestionList = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 5vh;
+    gap: 6vh;
 `;
 
 const ResultButton = styled.button`
