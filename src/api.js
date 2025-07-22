@@ -1,23 +1,34 @@
 // src/api.js
-export async function saveProfile(profile) {
-  const res = await fetch('/api/profiles', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(profile),
-  });
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || ''
+
+async function request(path, { method = 'GET', body, headers = {} } = {}) {
+  const res = await fetch(BASE_URL + path, {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      ...headers
+    },
+    body: body != null ? JSON.stringify(body) : undefined
+  })
+
+  // 에러 핸들링 통일
+  const data = await res.json().catch(() => ({}))
   if (!res.ok) {
-    const err = await res.json();
-    throw new Error(err.error || '프로필 저장 중 오류');
+    throw new Error(data.error || res.statusText)
   }
-  return res.json();
+  return data
 }
 
-export async function getStats() {
-  const res = await fetch('/api/stats');
-  if (!res.ok) {
-    const err = await res.json();
-    throw new Error(err.error || '통계 조회 중 오류');
+export function saveProfile({ nickname, gender, resultType }) {
+  // resultType 이 배열이든 단일값이든 서버가 처리할 수 있도록 보장
+  const payload = {
+    nickname,
+    gender,
+    resultType: Array.isArray(resultType) ? resultType : [resultType]
   }
-  return res.json();  // { typeCounts: [...] }
+  return request('/api/profiles', { method: 'POST', body: payload })
 }
 
+export function getStats() {
+  return request('/api/stats')
+}
