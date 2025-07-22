@@ -3,6 +3,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import Header from '../components/Header';
 import * as d3 from 'd3';
 import styled from 'styled-components';
+import { getStats } from '../api';
+
 import YoungSook from '../assets/images/characters/youngsook.png';
 import JungSook from '../assets/images/characters/jungsook.png';
 import SoonJa from '../assets/images/characters/soonja.png';
@@ -36,28 +38,35 @@ const maleList = [
 ];
 
 // 더미 데이터
-const dummyStats = [
-  { gender: 'female', result_type: '영숙', count: 5 },
-  { gender: 'female', result_type: '정숙', count: 3 },
-  { gender: 'female', result_type: '순자', count: 4 },
-  { gender: 'female', result_type: '영자', count: 6 },
-  { gender: 'female', result_type: '옥순', count: 2 },
-  { gender: 'female', result_type: '현숙', count: 1 },
-  { gender: 'male',   result_type: '영수', count: 7 },
-  { gender: 'male',   result_type: '상철', count: 2 },
-  { gender: 'male',   result_type: '광수', count: 4 },
-  { gender: 'male',   result_type: '영식', count: 3 },
-  { gender: 'male',   result_type: '영철', count: 5 },
-  { gender: 'male',   result_type: '영호', count: 1 },
-];
+// const dummyStats = [
+//   { gender: 'female', result_type: '영숙', count: 5 },
+//   { gender: 'female', result_type: '정숙', count: 3 },
+//   { gender: 'female', result_type: '순자', count: 4 },
+//   { gender: 'female', result_type: '영자', count: 6 },
+//   { gender: 'female', result_type: '옥순', count: 2 },
+//   { gender: 'female', result_type: '현숙', count: 1 },
+//   { gender: 'male',   result_type: '영수', count: 7 },
+//   { gender: 'male',   result_type: '상철', count: 2 },
+//   { gender: 'male',   result_type: '광수', count: 4 },
+//   { gender: 'male',   result_type: '영식', count: 3 },
+//   { gender: 'male',   result_type: '영철', count: 5 },
+//   { gender: 'male',   result_type: '영호', count: 1 },
+// ];
 
 const femaleCategories = ['영숙','정숙','순자','영자','옥순','현숙'];
 const maleCategories   = ['영수','상철','광수','영식','영철','영호'];
 
 export default function StatsPage() {
-  const [stats, setStats] = useState(dummyStats);
+  const [stats, setStats] = useState(null);
   const femaleRef = useRef(null);
   const maleRef   = useRef(null);
+
+  // 실제 API 호출
+  useEffect(() => {
+    getStats()
+      .then(({ typeCounts }) => setStats(typeCounts))
+      .catch(console.error);
+  }, []);
 
   // 차트 렌더링
   useEffect(() => {
@@ -124,7 +133,7 @@ function drawBarChart(container, data) {
     .domain(data.map(d => d.name))
     .range(['#F5A8C7','#E79BCF','#D98ED8','#CC82E0','#BE75E8','#B168F0']);
 
-  const width  = 600;
+  const width  = container.clientWidth || 600;
   const height = 300;
   const margin = { top: 20, right: 20, bottom: 40, left: 40 };
 
@@ -134,7 +143,9 @@ function drawBarChart(container, data) {
   const svg = d3.select(container)
     .append('svg')
       .attr('width', width)
-      .attr('height', height);
+      .attr('height', height)
+      .attr('viewBox', `0 0 ${width} ${height}`)
+      .attr('preserveAspectRario', 'xMidYMid meet');
 
   const x = d3.scaleBand()
     .domain(data.map(d => d.name))
@@ -231,6 +242,11 @@ const ChartSection = styled.div`
 const ChartWrapper = styled.div`
   display: flex;
   justify-content: center;
+  overflow-x: auto;   /* ✅ 가로 스크롤 허용 */
+  padding-bottom: 1rem;
+
+  /* 모바일에서 너무 작아지지 않도록 최소 너비 부여 */
+  min-width: 0;
 `;
 
 const ImageCard = styled.div`

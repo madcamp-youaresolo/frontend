@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import Header from '../components/Header';
 import QuestionItem from '../components/QuestionItem';
+import { saveProfile } from '../api';
 
 const originalQuestions = [
     { id: 1, text: "나는 계획을 세우고 스스로 추진하는 편이다.", group: "영숙" },
@@ -128,12 +129,18 @@ const FemaleTestPage = () => {
                 </QuestionList>
             </BodyWrapper>
             <ResultButton 
-                onClick={() => {
+                onClick={ async () => {
                     if (!allAnswered) {
                         return alert("모든 문항에 답하지 않았습니다.");
                     }
                     const result = calculateResult();
-                    navigate(`/test-result?nickname=${encodeURIComponent(nickname)}&gender=female&result=${result}`);
+                    try {
+                        await saveProfile({ nickname, gender: "female", resultType: result });
+                        navigate(`/test-result?nickname=${encodeURIComponent(nickname)}&gender=female&result=${result}`);
+                    } catch (err) {
+                        console.error('프로필 저장 실패:', err);
+                        alert('결과 저장 중 오류가 발생했습니다. 다시 시도하세요')
+                    }
                 }}
             >
                 결과 보기
