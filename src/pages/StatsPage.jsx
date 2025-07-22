@@ -1,4 +1,3 @@
-// src/pages/StatsPage.jsx
 import React, { useEffect, useRef, useState } from 'react';
 import Header from '../components/Header';
 import * as d3 from 'd3';

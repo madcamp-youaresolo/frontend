@@ -1,19 +1,20 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import Logo from '/logo.png';
 import RetryIconImage from '../assets/images/retry-black.png';
 
 const Header = () => {
     const navigate = useNavigate();
+    const location = useLocation();
 
     const handleLogo = () => {
         navigate('/');
     };
 
-    // for test
     const handleRetry = () => {
-        navigate('/page-for-test');
+        navigate(location.pathname, { replace: true });
+        //window.location.reload();
     };
 
     return (
