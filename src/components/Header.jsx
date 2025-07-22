@@ -48,19 +48,19 @@ const RetryWrapper = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 0.7vw;
+    gap: 0.8vw;
     cursor: pointer;
 `;
 
 const RetryIcon = styled.img`
-    width: clamp(4px, 4vw, 24px);
+    width: clamp(4px, 3vw, 20px);
     height: auto;
     display: block;
     object-fit: contain;
 `;
 
 const RetryText = styled.span`
-    font-size: clamp(14px, 2vw, 20px);
+    font-size: clamp(10px, 2vw, 16px);
     font-weight: 500;
     color: #121212;
 `;
