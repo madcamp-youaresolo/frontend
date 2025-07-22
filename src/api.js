@@ -2,6 +2,7 @@
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || ''
 
 async function request(path, { method = 'GET', body, headers = {} } = {}) {
+  console.log('API 요청 주소:', BASE_URL + path);
   const res = await fetch(BASE_URL + path, {
     method,
     headers: {
