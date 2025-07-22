@@ -3,6 +3,37 @@ import React, { useEffect, useRef, useState } from 'react';
 import Header from '../components/Header';
 import * as d3 from 'd3';
 import styled from 'styled-components';
+import YoungSook from '../assets/images/characters/youngsook.png';
+import JungSook from '../assets/images/characters/jungsook.png';
+import SoonJa from '../assets/images/characters/soonja.png';
+import YoungJa from '../assets/images/characters/youngja.png';
+import OkSoon from '../assets/images/characters/oksoon.png';
+import HyunSook from '../assets/images/characters/hyunsook.png';
+import YoungSu from '../assets/images/characters/youngsu.png';
+import SangChul from '../assets/images/characters/sangchul.png';
+import KwangSu from '../assets/images/characters/kwangsu.png';
+import YoungSik from '../assets/images/characters/youngsik.png';
+import YoungChul from '../assets/images/characters/youngchul.png';
+import YoungHo from '../assets/images/characters/youngho.png';
+
+
+const femaleList = [
+  { name: '영숙', src: YoungSook, subtitle: '리더형 / 커리어' },
+  { name: '정숙', src: JungSook, subtitle: '배려심 / 감성적' },
+  { name: '순자', src: SoonJa, subtitle: '독립성 / 쿨함' },
+  { name: '영자', src: YoungJa, subtitle: '막내 / 에너지' },
+  { name: '옥순', src: OkSoon, subtitle: '화제성 / 아름다움' }, 
+  { name: '현숙', src: HyunSook, subtitle: '온화형 / 따뜻함' },
+];
+  
+const maleList = [
+  { name: '영수', src: YoungSu, subtitle: '차분함 / 무게감' },
+  { name: '상철', src: SangChul, subtitle: '자유분방 / 털털함' },
+  { name: '광수', src: KwangSu, subtitle: '엘리트 / 지성' },
+  { name: '영식', src: YoungSik, subtitle: '비주얼 / 에너지' },
+  { name: '영철', src: YoungChul, subtitle: '직진 / 상남자' },
+  { name: '영호', src: YoungHo, subtitle: '부드러움 / 안정감' },
+];
 
 // 더미 데이터
 const dummyStats = [
@@ -65,6 +96,22 @@ export default function StatsPage() {
         ) : (
           <p>로딩 중…</p>
         )}
+        <ImageGrid>
+          {femaleList.map(c => (
+            <ImageCard key={c.name}>
+              <Avatar src={c.src} alt={c.name}/>
+              <Name>{c.name}</Name>
+              <Subcaption>{c.subtitle}</Subcaption>
+            </ImageCard>
+          ))}
+          {maleList.map(c => (
+            <ImageCard key={c.name}>
+              <Avatar src={c.src} alt={c.name}/>
+              <Name>{c.name}</Name>
+              <Subcaption>{c.subtitle}</Subcaption>
+            </ImageCard>
+          ))}
+        </ImageGrid>
       </Container>
     </Wrapper>
   );
@@ -152,6 +199,25 @@ const ChartGrid = styled.div`
 `;
 /* ================================================= */
 
+/* 반응형 그리드: wide→6열, mid→4열, small→2열 */
+const ImageGrid = styled.div`
+  display: grid;
+  grid-gap: 1.5rem;
+  margin-top: 3rem;
+
+  /* wide: 6 columns */
+  grid-template-columns: repeat(6, 1fr);
+
+  /* medium: 4 columns */
+  @media (max-width: 900px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  /* small: 2 columns */
+  @media (max-width: 600px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+`;
+
 const ChartSection = styled.div`
   background: white;
   padding: 1rem;
@@ -165,4 +231,28 @@ const ChartSection = styled.div`
 const ChartWrapper = styled.div`
   display: flex;
   justify-content: center;
+`;
+
+const ImageCard = styled.div`
+  text-align: center;
+`;
+
+const Avatar = styled.img`
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  border-radius: 8px;
+`;
+
+const Name = styled.div`
+  margin-top: 0.5rem;
+  font-weight: 700;
+  color: #121212;
+`;
+
+const Subcaption = styled.div`
+  margin-top: 0.25rem;
+  font-weight: 400;
+  font-size: 0.85rem;
+  color: #555;
 `;
