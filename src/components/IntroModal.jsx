@@ -150,6 +150,7 @@ const Input = styled.input`
     align-items: center;
     justify-content: center;
     background-color: #FAFAFA;
+    color: #121212;
 
     &:focus {
         outline: none;
