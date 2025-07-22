@@ -133,7 +133,7 @@ function drawBarChart(container, data) {
     .domain(data.map(d => d.name))
     .range(['#F5A8C7','#E79BCF','#D98ED8','#CC82E0','#BE75E8','#B168F0']);
 
-  const width  = 600;
+  const width  = container.clientWidth || 600;
   const height = 300;
   const margin = { top: 20, right: 20, bottom: 40, left: 40 };
 
@@ -143,7 +143,9 @@ function drawBarChart(container, data) {
   const svg = d3.select(container)
     .append('svg')
       .attr('width', width)
-      .attr('height', height);
+      .attr('height', height)
+      .attr('viewBox', `0 0 ${width} ${height}`)
+      .attr('preserveAspectRario', 'xMidYMid meet');
 
   const x = d3.scaleBand()
     .domain(data.map(d => d.name))
@@ -240,6 +242,11 @@ const ChartSection = styled.div`
 const ChartWrapper = styled.div`
   display: flex;
   justify-content: center;
+  overflow-x: auto;   /* ✅ 가로 스크롤 허용 */
+  padding-bottom: 1rem;
+
+  /* 모바일에서 너무 작아지지 않도록 최소 너비 부여 */
+  min-width: 0;
 `;
 
 const ImageCard = styled.div`
