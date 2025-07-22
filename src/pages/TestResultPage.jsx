@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import Header from '../components/Header';
-import html2canvas from 'html2canvas';
 
 // character images
 import YoungSook from '../assets/images/characters/youngsook.png';
@@ -20,7 +19,6 @@ import YoungHo from '../assets/images/characters/youngho.png';
 
 const TestResultPage = () => {
   const  headerRef = useRef(null);
-  const bodyRef = useRef(null);
   const [headerHeight, setHeaderHeight] = useState(0);
 
   useEffect(() => {
@@ -29,59 +27,12 @@ const TestResultPage = () => {
     }
   }, []);
 
-  const handleDownload = async () => {
-    if (!bodyRef.current) return;
-    try {
-      const canvas = await html2canvas(bodyRef.current, {
-        backgroundColor: null,
-        scale: 2, // 이미지 해상도 향상
-      });
-
-      const dataUrl = canvas.toDataURL('image/png');
-
-      const a = document.createElement('a');
-      a.hef = dataUrl
-      a.download = 'test-result.png';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-    } catch (err) {
-      console.error('이미지 저장 실패:', err);
-    }
-  };
-
-  const handleShare = async () => {
-    if (!bodyRef.current) return;
-    // 캡처 후 Blob 으로 변환
-    try {
-      const canvas = await html2canvas(bodyRef.current, { scale: 1 });
-      const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
-      const filesArray = [
-        new File([blob], 'result.png', { type: 'image/png' })
-      ];
-
-      if (navigator.canShare && navigator.canShare({ files: filesArray })) {
-        await navigator.share({
-          files: filesArray,
-          title: '나의 너는솔로 결과',
-          text: '내 캐릭터 유형을 확인해보세요!'
-        });
-      } else {
-        alert('이 브라우저는 파일 공유를 지원하지 않습니다.');
-      }
-    } catch (err) {
-      console.error('공유 실패', err);
-    }
-  };
-
-
-
   return (
     <Wrapper>
       <HeaderWrapper ref={headerRef}>
         <Header />
       </HeaderWrapper>
-      <BodyWrapper ref={bodyRef} $paddingTop={headerHeight}>
+      <BodyWrapper $paddingTop={headerHeight}>
         <BoldText size="clamp(16px, 5vw, 32px)">
           {/* user nickname */}
           <Pink>원숭이 </Pink>
@@ -103,16 +54,6 @@ const TestResultPage = () => {
           <br />
           성공한 커리어우먼의 표본, 당신은 바로 영숙입니다.
         </LightText>
-        <ButtonRow>
-          <IconButton onClick={handleDownload}>
-            <img src="public/saveImgIcon.png" alt="이미지 저장" />
-            이미지 저장
-          </IconButton>
-          <IconButton onClick={handleShare}>
-            <img src="/shareIcon.png" alt="결과 공유" />
-            결과 공유
-          </IconButton>
-        </ButtonRow>
       </BodyWrapper>
     </Wrapper>
   );
@@ -145,37 +86,6 @@ const BodyWrapper = styled.div`
   justify-content: center;
   padding-top: ${({ $paddingTop }) => `${$paddingTop}px`};
   padding-bottom: 10vh;
-`;
-
-
-// 버튼 가로 정렬 컨테이너
-const ButtonRow = styled.div`
-  display: flex;
-  gap: 1.5rem;
-  margin-top: 3rem;
-`;
-
-// 아이콘+텍스트 링크
-const IconButton = styled.button`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0;
-  background: none;
-  color: #121212;
-  font-weight: 500;
-  border: none;
-  cursor: pointer;
-  font-size: 1rem;
-
-  img {
-    width: 20px;
-    height: 20px;
-  }
-
-  &:hover {
-    text-decoration: underline;
-  }
 `;
 
 const BoldText = styled.span`
