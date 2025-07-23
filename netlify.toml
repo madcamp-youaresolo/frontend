@@ -3,7 +3,7 @@
   publish = "dist"
 
 [build.environment]
-  VITE_API_BASE_URL = "https://your-domain.com"
+  VITE_API_BASE_URL = "http://43.201.22.239:4000"
   SECRETS_SCAN_ENABLED = "false"
 
 [[redirects]]
